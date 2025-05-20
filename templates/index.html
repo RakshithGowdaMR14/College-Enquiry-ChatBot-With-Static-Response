@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIT CHATBOT</title>
+    <style>
+        body { 
+            font-family: 'Georgia', 'Times New Roman', serif; 
+            margin: 0; 
+            padding: 0; 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background-image 1s ease-in-out; /* Smooth background transition */
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: rgba(116, 163, 234, 0.5); /* Transparent sidebar */
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-left: 20px;
+            border-right: 2px solid #ddd;
+            z-index: 1000; /* Ensure the sidebar is above other content */
+        }
+
+        .sidebar h2 {
+            color: rgb(214, 229, 228);
+            margin-bottom: 20px;
+        }
+
+        .category-item {
+            width: 80%;
+            padding: 10px;
+            background-color: rgba(116, 163, 234, 0.5);
+            margin-bottom: 10px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .category-item:hover {
+            background-color: #ddd;
+        }
+
+        /* Chat container styles */
+        .chat-container { 
+            width: 500px; 
+            margin: 90px 300px 10px 970px; 
+            padding: 20px; 
+            background-color: rgba(116, 163, 234, 0.8); /* Slightly transparent white background */
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(10, 10, 10, 0.1); 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .chat-box { 
+            height: 300px; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            overflow-y: auto; /* Keep auto-scrolling behavior */
+        }
+
+        .user-message, .bot-message { 
+            margin: 10px 0; 
+        }
+
+        .user-message { 
+            text-align: right; 
+        }
+
+        .bot-message { 
+            text-align: left; 
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        input[type="text"] { 
+            width: 90%; 
+            padding: 10px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            border: 1px solid #ddd; 
+        }
+
+        .send-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #3230d8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 18px;
+        }
+
+        .send-icon:hover {
+            background-color: #4cae4c;
+        }
+
+        /* CSS for the loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light gray */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            display: flex;
+            align-items: center;
+        }
+
+        .loading-message span {
+            margin-left: 10px;
+        }
+
+        /* Preformatted text for bot response */
+        pre {
+            white-space: pre-wrap; /* Makes sure text wraps correctly */
+            word-wrap: break-word; /* Allows long words to break if necessary */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar for categories -->
+<div class="sidebar">
+    <h3>Quick Links</h3>
+    <div class="category-item" onclick="window.location.href='https://www.mitmysore.in'">Official Website</div>
+    <div class="category-item" onclick="window.location.href='https://mitmysore.in/why-to-join-mitm/'">About MITM</div>
+    <div class="category-item" onclick="window.location.href='https://mitmysore.in/news-events/'">Circulars & Events</div>
+    <div class="category-item" onclick="window.location.href='https://mitmysore.in/digital-notes/'">E-NOTES</div>
+    <div class="category-item" onclick="window.location.href='https://mitmysore.in/gallery_mitm/'">Gallery</div>
+    <div class="category-item" onclick="window.location.href='Link : https://mitlibraryblog.wordpress.com/question-bank/'">Question Bank</div>
+    <div class="category-item" onclick="window.location.href='https://mitmysore.in/placement-training/'">Placements</div>
+</div>
+
+<!-- Main Chat container -->
+<div class="chat-container">
+    <h2>Maharaja Institute Of Technology Mysore</h2>
+    <div class="chat-box" id="chat-box">
+        <!-- Chat messages will appear here -->
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Ask a question..." autocomplete="off">
+        <div class="send-icon" onclick="sendMessage()">↑</div> <!-- Up Arrow Icon -->
+    </div>
+</div>
+
+<div id="chatbot-response">
+    <!-- The bot's response will be inserted here -->
+    <pre id="response-text">{{ bot_response|safe }}</pre>
+</div>
+
+<script>
+    // Array of background images
+    const backgrounds = [
+        "https://project-b08-2022.github.io/MIT-Official-Website/Images/MITM_3.jpeg", // First image (higher resolution)
+        "https://project-b08-2022.github.io/MIT-Official-Website/Images/MITM_4.jpeg", // Second image (higher resolution)
+        "https://i.ytimg.com/vi/reWxig0udU0/maxresdefault.jpg", // Third image (higher resolution)
+        "https://project-b08-2022.github.io/MIT-Official-Website/Images/MITM_1.jpeg"  // Fourth image (higher resolution)
+    ];
+
+    let currentBackgroundIndex = 0;
+
+    // Function to change background image
+    function changeBackground() {
+        document.body.style.backgroundImage = `url('${backgrounds[currentBackgroundIndex]}')`;
+        currentBackgroundIndex = (currentBackgroundIndex + 1) % backgrounds.length;
+    }
+
+    // Change background every 4 seconds
+    setInterval(changeBackground, 4000);
+
+    // Function to handle sending messages
+    function sendMessage() {
+        var userInput = document.getElementById("user-input").value;
+        if (userInput.trim() === "") {
+            return;
+        }
+
+        // Display user's message in chatbox
+        var chatBox = document.getElementById("chat-box");
+        var userMessage = document.createElement("div");
+        userMessage.classList.add("user-message");
+        userMessage.innerText = "You: " + userInput;
+        chatBox.appendChild(userMessage);
+
+        // Clear the input field
+        document.getElementById("user-input").value = "";
+
+        // Display loading message and spinner
+        var loadingMessage = document.createElement("div");
+        loadingMessage.classList.add("loading-message");
+        var spinner = document.createElement("div");
+        spinner.classList.add("loader");
+        loadingMessage.appendChild(spinner);
+        var text = document.createElement("span");
+        text.innerText = "Just a second";
+        loadingMessage.appendChild(text);
+        chatBox.appendChild(loadingMessage);
+
+        // Scroll to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Send the user's message to Flask backend for response
+        fetch("/get_response", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "user_input=" + encodeURIComponent(userInput)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Simulate a delay before displaying the bot's response
+            setTimeout(() => {
+                // Remove the loading message
+                chatBox.removeChild(loadingMessage);
+
+                // Display the bot's response using typewriter effect
+                var botMessage = document.createElement("div");
+                botMessage.classList.add("bot-message");
+                chatBox.appendChild(botMessage);
+
+                // Typewriter effect
+                typeWriterEffect(botMessage, "VaNam: " + data.response, 20); // Typing speed is 50ms per character
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);  // Delay before bot's response (1 second)
+        });
+    }
+
+    // Typewriter effect function
+    function typeWriterEffect(element, text, speed) {
+        var i = 0;
+        element.innerHTML = '';  // Clear the content first
+        var typingInterval = setInterval(function() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(typingInterval);  // Stop the typing effect when the full text is displayed
+            }
+        }, speed);
+    }
+
+    // Add event listener for "Enter" key press
+    document.getElementById("user-input").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            sendMessage(); // Call sendMessage function when Enter is pressed
+        }
+    });
+
+    // Initialize background
+    changeBackground();
+</script>
+
+</body>
+</html>
