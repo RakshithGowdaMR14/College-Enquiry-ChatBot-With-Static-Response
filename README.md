@@ -35,3 +35,28 @@ HTML/CSS (for UI)
 📫 Contact
 
 For questions or contributions, please reach out at: rakshithgowdamr017@gmail.com
+
+
+# SNAPSHOTS
+
+![Screenshot 2024-12-12 220102](https://github.com/user-attachments/assets/f8fdb922-daf2-4f34-a48b-dae0499366a5)
+                                
+                                     HOME PAGE 
+
+
+
+
+
+![Screenshot 2024-12-12 220525](https://github.com/user-attachments/assets/d325fd9c-8a28-42c9-b487-e85b4a993ef1)
+
+                                   KNOWLEDGE BASE 
+
+
+
+
+
+
+![Screenshot 2024-12-12 220251](https://github.com/user-attachments/assets/35c1e0e8-2ee1-46af-bf2f-974e030c96bb)
+
+                                 RESPONSE FROM BOT
+
